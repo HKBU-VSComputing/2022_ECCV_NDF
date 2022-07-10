@@ -1,0 +1,166 @@
+task: "if_nerf"
+gpus: [1]
+
+shell_loss: True
+thickness: 0.12
+thickness_validscale: 0.8
+
+vertices: "new_vertices"
+normals: "new_normals"
+transformationMatrix: "new_transformationMatrix"
+projectionStyle: "blender"
+smpl: "smpl"
+params: "new_params"
+uvPath: "./data/smpl_uv_20200910/smpl_uv.obj"
+erode: 3
+eval_whole_img: False
+
+train_dataset_module: "lib.datasets.light_stage.multi_view_ndf_dataset"
+train_dataset_path: "lib/datasets/light_stage/multi_view_ndf_dataset.py"
+test_dataset_module: "lib.datasets.light_stage.multi_view_ndf_dataset"
+test_dataset_path: "lib/datasets/light_stage/multi_view_ndf_dataset.py"
+
+network_module: "lib.networks.ndf_network"
+network_path: "lib/networks/ndf_network.py"
+renderer_module: "lib.networks.renderer.ndf_renderer"
+renderer_path: "lib/networks/renderer/ndf_renderer.py"
+
+trainer_module: "lib.train.trainers.if_nerf_clight"
+trainer_path: "lib/train/trainers/if_nerf_clight.py"
+
+evaluator_module: "lib.evaluators.if_nerf"
+evaluator_path: "lib/evaluators/if_nerf.py"
+
+visualizer_module: "lib.visualizers.if_nerf"
+visualizer_path: "lib/visualizers/if_nerf.py"
+
+human: 313
+
+train_dataset:
+  data_root: "data/zju_mocap/CoreView_313"
+  human: "CoreView_313"
+  ann_file: "data/zju_mocap/CoreView_313/annots.npy"
+  split: "train"
+
+test_dataset:
+  data_root: "data/zju_mocap/CoreView_313"
+  human: "CoreView_313"
+  ann_file: "data/zju_mocap/CoreView_313/annots.npy"
+  split: "test"
+
+train:
+  batch_size: 1
+  collator: ""
+  lr: 5e-4
+  weight_decay: 0
+  epoch: 400
+  scheduler:
+    type: "exponential"
+    gamma: 0.1
+    decay_epochs: 1000
+  num_workers: 16
+
+test:
+  sampler: "FrameSampler"
+  frame_sampler_interval: 30
+  batch_size: 1
+  collator: ""
+  num_workers: 16
+
+ep_iter: 500
+save_ep: 200
+eval_ep: 1000
+
+# rendering options
+i_embed: 0
+xyz_res: 10
+view_res: 4
+raw_noise_std: 0
+
+N_samples: 64
+N_importance: 128
+N_rand: 1024
+
+perturb: 1
+white_bkgd: False
+
+num_render_views: 50
+
+# data options
+H: 1024
+W: 1024
+ratio: 0.5
+training_view: [0, 6, 12, 18]
+num_train_frame: 60
+num_novel_pose_frame: 1000
+frame_interval: 1
+
+voxel_size: [0.005, 0.005, 0.005] # dhw
+
+# record options
+log_interval: 1
+
+novel_view_cfg:
+  train_dataset_module: "lib.datasets.light_stage.multi_view_demo_dataset_IT_fifth"
+  train_dataset_path: "lib/datasets/light_stage/multi_view_demo_dataset_IT_fifth.py"
+  test_dataset_module: "lib.datasets.light_stage.multi_view_demo_dataset_IT_fifth"
+  test_dataset_path: "lib/datasets/light_stage/multi_view_demo_dataset_IT_fifth.py"
+
+  renderer_module: "lib.networks.renderer.if_clight_renderer_mmsk_IT_fifth"
+  renderer_path: "lib/networks/renderer/if_clight_renderer_mmsk_IT_fifth.py"
+
+  visualizer_module: "lib.visualizers.if_nerf_demo"
+  visualizer_path: "lib/visualizers/if_nerf_demo.py"
+
+  test:
+    sampler: ""
+
+rotate_smpl_cfg:
+  train_dataset_module: "lib.datasets.light_stage.rotate_smpl_dataset"
+  train_dataset_path: "lib/datasets/light_stage/rotate_smpl_dataset.py"
+  test_dataset_module: "lib.datasets.light_stage.rotate_smpl_dataset"
+  test_dataset_path: "lib/datasets/light_stage/rotate_smpl_dataset.py"
+
+  renderer_module: "lib.networks.renderer.if_clight_renderer_IT"
+  renderer_path: "lib/networks/renderer/if_clight_renderer_IT.py"
+
+  visualizer_module: "lib.visualizers.if_nerf_demo"
+  visualizer_path: "lib/visualizers/if_nerf_demo.py"
+
+  test:
+    sampler: ""
+
+novel_pose_cfg:
+  train_dataset_module: "lib.datasets.light_stage.multi_view_perform_dataset_IT_fifth_rewrite222"
+  train_dataset_path: "lib/datasets/light_stage/multi_view_perform_dataset_IT_fifth_rewrite222.py"
+  test_dataset_module: "lib.datasets.light_stage.multi_view_perform_dataset_IT_fifth_rewrite222"
+  test_dataset_path: "lib/datasets/light_stage/multi_view_perform_dataset_IT_fifth_rewrite222.py"
+
+  renderer_module: "lib.networks.renderer.if_clight_renderer_mmsk_IT_fifth"
+  renderer_path: "lib/networks/renderer/if_clight_renderer_mmsk_IT_fifth.py"
+
+  visualizer_module: "lib.visualizers.if_nerf_perform"
+  visualizer_path: "lib/visualizers/if_nerf_perform.py"
+
+  test:
+    sampler: ""
+
+mesh_cfg:
+  train_dataset_module: "lib.datasets.light_stage.multi_view_mesh_dataset_IT_fifth"
+  train_dataset_path: "lib/datasets/light_stage/multi_view_mesh_dataset_IT_fifth.py"
+  test_dataset_module: "lib.datasets.light_stage.multi_view_mesh_dataset_IT_fifth"
+  test_dataset_path: "lib/datasets/light_stage/multi_view_mesh_dataset_IT_fifth.py"
+
+  network_module: "lib.networks.ndf_network"
+  network_path: "lib/networks/ndf_network.py"
+  renderer_module: "lib.networks.renderer.if_mesh_renderer_IT_fifth"
+  renderer_path: "lib/networks/renderer/if_mesh_renderer_IT_fifth.py"
+
+  visualizer_module: "lib.visualizers.if_nerf_mesh"
+  visualizer_path: "lib/visualizers/if_nerf_mesh.py"
+
+  mesh_th: 5
+
+  test:
+    sampler: "FrameSampler"
+    frame_sampler_interval: 1
