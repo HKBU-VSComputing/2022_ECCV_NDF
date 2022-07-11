@@ -6,7 +6,12 @@
 
 This is the official implementation of NDF published at ECCV2022. The proposed method is able to conduct novel view synthesis and novel pose synthesis given the multi-view video observation. The above figure shows the dynamics related to changing poses. The code is implemented in pytorch and run on CentOS 7.7.
 
+The learned rendering in observation space:
 ![dynamic](./images/dynamic.gif)
+
+
+The learned rendering in NDF space:
+![dynamic](./images/texture.png)
 
 
 ## Installation

@@ -5,6 +5,8 @@ parent_cfg: 'configs/zju_mocap_exp/ndf_313.yaml'
 
 human: 386
 
+start_loss: 1
+
 train_dataset:
     data_root: 'data/zju_mocap/CoreView_386'
     human: 'CoreView_386'

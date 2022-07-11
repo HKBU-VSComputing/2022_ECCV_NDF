@@ -154,8 +154,8 @@ def get_sampling_points(
     # savePath = './resultLocation.obj'
     # neg_index = resultValuedSampleIndex[0][negIndexBool]
     # pos_index = resultValuedSampleIndex[0][(1-negIndexBool).astype(np.bool8)]
-    # select_index = biggerIndex 
-    # select_points = pts.reshape(-1,3)[select_index] 
+    # select_index = biggerIndex
+    # select_points = pts.reshape(-1,3)[select_index]
     # with open(savePath, 'w') as saveFile:
     #     for index, point in enumerate(select_points):
     #         strs = []
@@ -169,7 +169,47 @@ def get_sampling_points(
     #         saveFile.writelines(changedLine)
     #         saveFile.writelines('\n')
 
+    return resultLocation, z_vals, biggerIndex
 
+
+def get_sampling_points_drawtexture(
+    ray_o,
+    ray_d,
+    near,
+    far,
+    vertices,
+    faces,
+    N_samples,
+    split,
+    perturb,
+    nrays,
+    transformationMatrix,
+    thickness=0.1,
+    thickness_validscale=0.8,
+):
+
+    t_vals = np.linspace(0., 1., num=N_samples)
+
+    z_vals = near[..., None] * (1. - t_vals) + far[..., None] * t_vals
+
+    if perturb > 0. and split == 'train':
+        # get intervals between samples
+        mids = .5 * (z_vals[..., 1:] + z_vals[..., :-1])
+        # 所有采样点的中点
+
+        upper = np.concatenate([mids, z_vals[..., -1:]], -1)
+        lower = np.concatenate([z_vals[..., :1], mids], -1)
+        # stratified samples in those intervals
+        t_rand = np.random.rand(*z_vals.shape)
+        # use * here to flat the shape as input
+        z_vals = lower + (upper - lower) * t_rand
+
+    pts = ray_o[:, None] + ray_d[:, None] * z_vals[..., None]
+    pts = pts.reshape(-1, 3)
+    pts[:, -1] = pts[:, -1] * 5
+    resultLocation = pts.reshape(ray_o.shape[0], N_samples,
+                                 3).astype(np.float32)
+    biggerIndex = np.array([])
     return resultLocation, z_vals, biggerIndex
 
 

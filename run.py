@@ -1,10 +1,12 @@
 from IPython.terminal.embed import embed
-from lib.config import cfg, args
+
+from lib.config import args, cfg
 
 
 def run_dataset():
-    from lib.datasets import make_data_loader
     import tqdm
+
+    from lib.datasets import make_data_loader
 
     cfg.train.num_workers = 0
     data_loader = make_data_loader(cfg, is_train=False)
@@ -13,12 +15,14 @@ def run_dataset():
 
 
 def run_network():
-    from lib.networks import make_network
-    from lib.datasets import make_data_loader
-    from lib.utils.net_utils import load_network
-    import tqdm
-    import torch
     import time
+
+    import torch
+    import tqdm
+
+    from lib.datasets import make_data_loader
+    from lib.networks import make_network
+    from lib.utils.net_utils import load_network
 
     network = make_network(cfg).cuda()
     load_network(network, cfg.trained_model_dir, epoch=cfg.test.epoch)
@@ -40,13 +44,14 @@ def run_network():
 
 
 def run_evaluate():
+    import torch
+    import tqdm
+
     from lib.datasets import make_data_loader
     from lib.evaluators import make_evaluator
-    import tqdm
-    import torch
     from lib.networks import make_network
-    from lib.utils import net_utils
     from lib.networks.renderer import make_renderer
+    from lib.utils import net_utils
 
     cfg.perturb = 0
     network = make_network(cfg).cuda()
@@ -55,8 +60,6 @@ def run_evaluate():
                            resume=cfg.resume,
                            epoch=cfg.test.epoch)
     network.train()
-
-
 
     data_loader = make_data_loader(cfg, is_train=False, current_epoch=100)
     renderer = make_renderer(cfg, network)
@@ -81,14 +84,15 @@ def run_evaluate():
 
 def run_visualize():
     from lib.networks import make_network
-    from lib.datasets import make_data_loader
-    from lib.utils.net_utils import load_network
-    from lib.utils import net_utils
-    import tqdm
     import torch
-    from lib.visualizers import make_visualizer
-    from lib.networks.renderer import make_renderer
+    import tqdm
 
+    from lib.datasets import make_data_loader
+    from lib.datasets import make_data_loader
+    from lib.networks.renderer import make_renderer
+    from lib.utils import net_utils
+    from lib.utils import net_utils
+    from lib.networks.renderer import make_renderer
     cfg.perturb = 0
 
     network = make_network(cfg).cuda()
@@ -119,9 +123,10 @@ def run_light_stage():
 
 def run_evaluate_nv():
     from lib.datasets import make_data_loader
+    import tqdm
+
     from lib.evaluators import make_evaluator
     import tqdm
-    from lib.utils import net_utils
 
     data_loader = make_data_loader(cfg, is_train=False)
     evaluator = make_evaluator(cfg)

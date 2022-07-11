@@ -179,8 +179,6 @@ def sample_ray(img, msk, K, R, T, bounds, nrays, split):
     return rgb, ray_o, ray_d, near, far, coord, mask_at_box
 
 
-
-
 def sample_ray_h36m(img, msk, K, R, T, bounds, nrays, split):
     H, W = img.shape[:2]
     ray_o, ray_d = get_rays(H, W, K, R, T)
@@ -220,7 +218,6 @@ def sample_ray_h36m(img, msk, K, R, T, bounds, nrays, split):
             coord = np.argwhere(bound_mask == 1)
             coord = coord[np.random.randint(0, len(coord), n_rand)]
 
-
             if len(coord_face) > 0:
                 coord = np.concatenate([coord_body, coord_face, coord], axis=0)
             else:
@@ -259,6 +256,24 @@ def sample_ray_h36m(img, msk, K, R, T, bounds, nrays, split):
         ray_o = ray_o[mask_at_box]
         ray_d = ray_d[mask_at_box]
         coord = np.zeros([len(rgb), 2]).astype(np.int64)
+
+    return rgb, ray_o, ray_d, near, far, coord, mask_at_box
+
+
+def sample_ray_all(img, msk, K, R, T, bounds, nrays, split):
+    bounds = np.array([[0, 0, 0], [1, 1, 0.2]])
+    H, W = img.shape[:2]
+    ray_o, ray_d = get_rays(H, W, K, R, T)
+    rgb = img.reshape(-1, 3).astype(np.float32)
+    ray_o = ray_o.reshape(-1, 3).astype(np.float32)
+    ray_d = ray_d.reshape(-1, 3).astype(np.float32)
+    near, far, mask_at_box = get_near_far(bounds, ray_o, ray_d)
+    near = near.astype(np.float32)
+    far = far.astype(np.float32)
+    rgb = rgb[mask_at_box]
+    ray_o = ray_o[mask_at_box]
+    ray_d = ray_d[mask_at_box]
+    coord = np.zeros([len(rgb), 2]).astype(np.int64)
 
     return rgb, ray_o, ray_d, near, far, coord, mask_at_box
 

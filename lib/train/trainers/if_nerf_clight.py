@@ -34,7 +34,8 @@ class NetworkWrapper(nn.Module):
         scalar_stats.update({'img_loss': img_loss})
         loss += img_loss
 
-        if cfg.get('shell_loss') == True and img_loss <= 0.005:
+        start_loss = cfg.get('start_loss', 0.005)
+        if cfg.get('shell_loss') is True and img_loss <= start_loss:
 
             near_mask = batch['biggerIndex']
             mask_shell = near_mask.reshape(-1)
