@@ -1,6 +1,6 @@
 # NDF: Neural Deformable Fields for Dynamic Human Modelling
 
-> [NDF: Neural Deformable Fields for Dynamic Human Modelling]
+> [NDF: Neural Deformable Fields for Dynamic Human Modelling] 
 > Ruiqi Zhang, Jie Chen  
 > ECCV 2022
 
